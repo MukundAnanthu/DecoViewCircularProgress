@@ -10,8 +10,15 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="com.dwarka.mukund.drawingcircularprogressbars.MainActivity">
 
-    <TextView
+
+    <!-- custom:dv_lineWidth sets the width of the progress ring  -->
+    <com.hookedonplay.decoviewlib.DecoView
+        xmlns:custom="http://schemas.android.com/apk/res-auto"
+        custom:dv_lineWidth="26dp"
+        android:id="@+id/dynamicArcView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Hello World!" />
+        />
+
+
 </RelativeLayout>
