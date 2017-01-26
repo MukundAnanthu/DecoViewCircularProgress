@@ -2,11 +2,16 @@ package com.dwarka.mukund.drawingcircularprogressbars;
 
 import android.app.Activity;
 import android.graphics.Color;
+import android.graphics.PointF;
 import android.os.Bundle;
 import android.os.Handler;
+import android.view.animation.OvershootInterpolator;
+import android.widget.TextView;
 
 import com.hookedonplay.decoviewlib.DecoView;
+import com.hookedonplay.decoviewlib.charts.EdgeDetail;
 import com.hookedonplay.decoviewlib.charts.SeriesItem;
+import com.hookedonplay.decoviewlib.charts.SeriesLabel;
 import com.hookedonplay.decoviewlib.events.DecoEvent;
 
 public class MainActivity extends Activity {
@@ -28,10 +33,60 @@ public class MainActivity extends Activity {
 
         //Create data series track
         // The color set is the color of the arc representing progress
-        SeriesItem seriesItem1 = new SeriesItem.Builder(Color.argb(255, 64, 196, 0))
+        final SeriesItem seriesItem1 = new SeriesItem.Builder(Color.argb(255, 64, 196, 0))
                 .setRange(0, 100, 0)
                 .setLineWidth(32f)
+                .addEdgeDetail(new EdgeDetail(EdgeDetail.EdgeType.EDGE_OUTER, Color.parseColor("#22000000"), 0.4f)) // Adds the edge to the ring
+                //.setSeriesLabel(new SeriesLabel.Builder("Percent %.0f%%").build()) // Adds that Toast kinda thing along the arc, to dispay the percentage
+                //.setInterpolator(new OvershootInterpolator()) // The progress overshoots its mark and then comes back
+                .setCapRounded(false) // makes the progress arc have flat ends
+                //.setInset(new PointF(32f, 32f)) // draws the progress arc inside the track, instead of on the track
+                //.setDrawAsPoint(true) // results in just a small stick indicating the progress. It's movement instead of smear
+                //.setSpinDuration(6000) // no visible effect seen
                 .build();
+
+
+
+
+        seriesItem1.addArcSeriesItemListener(new SeriesItem.SeriesItemListener() {
+            String format = "%.0f%%";
+            TextView percentageChargeTextView = (TextView) findViewById(R.id.percentage_display_tv);
+            @Override
+            public void onSeriesItemAnimationProgress(float percentComplete, float currentPosition) {
+                if (format.contains("%%")) {
+                    float percentFilled = ((currentPosition - seriesItem1.getMinValue()) / (seriesItem1.getMaxValue() - seriesItem1.getMinValue()));
+                    percentageChargeTextView.setText(String.format(format, percentFilled * 100f));
+                } else {
+                    percentageChargeTextView.setText(String.format(format, currentPosition));
+                }
+            }
+
+            @Override
+            public void onSeriesItemDisplayProgress(float percentComplete) {
+
+            }
+        });
+
+
+        /*
+        Code showing how we could configure the seriesItem
+
+        SeriesItem seriesItem1 = new SeriesItem.Builder(Color.argb(255, 64, 196, 0))
+                .setRange(0, seriesMax, 0)
+                .setInitialVisibility(false)
+                .setLineWidth(32f)
+                .addEdgeDetail(new EdgeDetail(EdgeDetail.EdgeType.EDGE_OUTER, Color.parseColor("#22000000"), 0.4f))
+                .setSeriesLabel(new SeriesLabel.Builder("Percent %.0f%%").build())
+                .setInterpolator(new OvershootInterpolator())
+                .setShowPointWhenEmpty(false)
+                .setCapRounded(false)
+                .setInset(new PointF(32f, 32f))
+                .setDrawAsPoint(false)
+                .setSpinClockwise(true)
+                .setSpinDuration(6000)
+                .setChartStyle(SeriesItem.ChartStyle.STYLE_DONUT)
+                .build();*/
+
 
         final int series1Index = arcView.addSeries(seriesItem1);
 
@@ -43,10 +98,12 @@ public class MainActivity extends Activity {
 
 
         // setDelay implies the amount of milliseconds before the event/animation is triggered
-        arcView.addEvent(new DecoEvent.Builder(25).setIndex(series1Index).setDelay(8000).build());
+        arcView.addEvent(new DecoEvent.Builder(25).setIndex(series1Index).setDelay(2000).build());
         //arcView.addEvent(new DecoEvent.Builder(100).setIndex(series1Index).setDelay(8000).build());
         //arcView.addEvent(new DecoEvent.Builder(10).setIndex(series1Index).setDelay(12000).build());
 
+        /*
+        Working code...
         final int[] progress = {0};
         final Handler handler = new Handler();
         handler.post(
@@ -59,15 +116,7 @@ public class MainActivity extends Activity {
                             handler.postDelayed(this, 1000);
                     }
                 }
-        );
+        );*/
 
-        /*for ( int i = 0; i <= 100; i++ ) {
-            arcView.addEvent(new DecoEvent.Builder(i).setIndex(series1Index).setDelay(4000).build());
-            try {
-                Thread.sleep(1000);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        }*/
     }
 }
