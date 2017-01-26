@@ -17,6 +17,7 @@ import android.view.animation.OvershootInterpolator;
 import android.widget.TextView;
 
 import com.hookedonplay.decoviewlib.DecoView;
+import com.hookedonplay.decoviewlib.charts.DecoDrawEffect;
 import com.hookedonplay.decoviewlib.charts.EdgeDetail;
 import com.hookedonplay.decoviewlib.charts.SeriesItem;
 import com.hookedonplay.decoviewlib.charts.SeriesLabel;
@@ -102,6 +103,7 @@ public class MainActivity extends Activity {
 
         // Add events to animate the data series
         arcView.addEvent(new DecoEvent.Builder(DecoEvent.EventType.EVENT_SHOW, true)
+        //arcView.addEvent(new DecoEvent.Builder(new DecoEvent.Builder(DecoDrawEffect.EffectType.EFFECT_SPIRAL_OUT)
                 //.setDelay(1)
                 .setDuration(1000)  // it's the time required to display the grey ring. This includes the animation of the ring expanding to it's actual size
                 .build());
